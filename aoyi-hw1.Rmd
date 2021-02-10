@@ -1,0 +1,68 @@
+---
+title: "MA677 HW1"
+author: "Aoyi Li"
+date: "2021/2/9"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+```
+
+## Find critical values
+```{r}
+
+n = 100
+
+# Generate a function for alpha(p)
+alpha <- function(m, n, p){
+  sum(dbinom(m:n, n, p))
+}
+
+# Get critical value for the experiment
+for(i in 60:n){
+  if (alpha(i,n,0.6)<0.05){
+    cat("The critical value for type-I error is",i)
+    break;
+  }
+}
+
+for(j in 80:1){
+  if ((1-alpha(j,n,0.8))<0.05){
+    cat("The critical value for type-II error is",j)
+    break;
+  }
+}
+
+```
+## Explanation for the critical value m.
+For type-I error we choose p=0.6 and for type-II error we choose p=0.8. As the book mentioned that increasing m above the most probable value np which is 100*0.6 = 60 will make type-I error less likely. Similarly, decreasing m below 80 will make type-II error less likely. Since we want both type-I and II error less than 0.05, we choose the critical value to be the smallest number making type-I error less than 0.05 and to be the largest number making type-II error less than 0.05. Then we can find that the critical value should be between 69 and 73 people cured.
+
+## Plot
+```{r}
+# Sequence for values on x axis when p is between 0.4 to 1.
+x <- seq(0.4, 1, by = 0.01)
+
+# Generate a function to get values of alpha(p) when p is between 0.4 to 1.
+n_y<-c()
+y<- function(m){
+  for(g in x){
+    a<-alpha(m,n,g)
+    n_y<-c(n_y,a)
+  }
+  n_y
+}
+
+# plot
+ggplot()+
+  geom_rect(aes(xmin = 0.6, xmax = 0.8, ymin = 0.05, ymax = 0.95), fill="transparent",color="gray44")+
+  geom_line(aes(x,y(69)))+
+  geom_line(aes(x,y(73)))+
+  theme_classic()+
+  theme(axis.title.x = element_blank())+
+  theme(axis.title.y = element_blank())+
+  labs(title = 'Figure 3.7: The power curve')
+
+```
+
