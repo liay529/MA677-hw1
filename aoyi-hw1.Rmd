@@ -9,18 +9,29 @@ output: pdf_document
 knitr::opts_chunk$set(echo = TRUE)
 library(ggplot2)
 ```
+## Chapter2 of G&S, Example 3.11. 
+The authors write "A few experiments have shown us that m = 69 is the smallest value for m that thwarts a type 1 error, while m = 73 is the largest which thwarts a type 2." They report the results but don't show their experiments. Similarly, they show the power curve in Figure 3.7. but not how it was produced. This assignment is to fill in these gaps.
 
 ## Find critical values
+### Using experiments and for-loop
 ```{r}
-
 n = 100
 
 # Generate a function for alpha(p)
 alpha <- function(m, n, p){
   sum(dbinom(m:n, n, p))
 }
+# Get critical value by different experiment 
+cat("If critical value = 64, the type-I error is",alpha(64,n,0.6))
+cat("If critical value = 68, the type-I error is",alpha(68,n,0.6))
+cat("If critical value = 69, the type-I error is",alpha(69,n,0.6))
 
-# Get critical value for the experiment
+cat("If critical value = 78, the type-II error is",1-alpha(78,n,0.8))
+cat("If critical value = 74, the type-II error is",1-alpha(74,n,0.8))
+cat("If critical value = 73, the type-II error is",1-alpha(73,n,0.8))
+
+
+# Get critical value by for-loop
 for(i in 60:n){
   if (alpha(i,n,0.6)<0.05){
     cat("The critical value for type-I error is",i)
